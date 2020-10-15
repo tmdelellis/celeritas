@@ -20,13 +20,14 @@ namespace celeritas
 {
 //---------------------------------------------------------------------------//
 /*!
- * Brief class description.
+ * Perform multiple scattering using the Urban model
  *
- * This is a model for XXXX process. Additional description
+ * This is a model for the continuous-discrete multiple scattering of electrons
+ * and positrons.
  *
- * \note This performs the same sampling routine as in Geant4's
- * XXXX class, as documented in section XXX of the Geant4 Physics
- * Reference (release 10.6).
+ * \note This performs the same sampling routine as in Geant4's G4UrbanMscModel
+ * class, as documented in section 8.1 of the Geant4 Physics Reference (release
+ * 10.6).
  */
 class UrbanInteractor
 {
@@ -46,13 +47,13 @@ class UrbanInteractor
     //! Minimum incident energy for this model to be valid
     static CELER_CONSTEXPR_FUNCTION units::MevEnergy min_incident_energy()
     {
-        return units::MevEnergy{0}; // XXX
+        return units::MevEnergy{0};
     }
 
     //! Maximum incident energy for this model to be valid
     static CELER_CONSTEXPR_FUNCTION units::MevEnergy max_incident_energy()
     {
-        return units::MevEnergy{0}; // XXX
+        return units::MevEnergy{100.0}; // XXX
     }
 
   private:
