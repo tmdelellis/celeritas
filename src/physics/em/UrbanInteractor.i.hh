@@ -24,7 +24,8 @@ UrbanInteractor::UrbanInteractor(const UrbanInteractorPointers& shared,
 {
     REQUIRE(inc_energy_ >= this->min_incident_energy()
             && inc_energy_ <= this->max_incident_energy());
-    REQUIRE(particle.def_id() == shared_.gamma_id); // XXX
+    REQUIRE(particle.def_id() == shared_.electron_id
+            || particle.def_id() == shared_.electron_id);
 }
 
 //---------------------------------------------------------------------------//
