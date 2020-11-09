@@ -48,6 +48,9 @@ TEST(KernelDiagnosticsTest, occupancy)
     std::tie(registers, occupancy) = diag.at("dummy_kernel");
     EXPECT_GT(occupancy, 0);
     EXPECT_GT(registers, 0);
+
+    KernelDiagnostics::clear();
+    EXPECT_TRUE(diag.empty());
 }
 
 //---------------------------------------------------------------------------//

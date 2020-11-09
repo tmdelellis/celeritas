@@ -59,6 +59,22 @@ void from_json(const nlohmann::json& j, KNDemoResult& v)
     j.at("edep").get_to(v.edep);
     j.at("total_time").get_to(v.total_time);
 }
+
+
+void to_json(nlohmann::json& j, const KNDemoKernelDiag& v)
+{
+    j = nlohmann::json{{"kernel", v.kernel},
+                       {"registers", v.registers},
+                       {"occupancy", v.occupancy}};
+}
+
+void from_json(const nlohmann::json& j, KNDemoKernelDiag& v)
+{
+    j.at("kernel").get_to(v.kernel);
+    j.at("register").get_to(v.registers);
+    j.at("occupancy").get_to(v.occupancy);
+}
+
 //@}
 
 //---------------------------------------------------------------------------//

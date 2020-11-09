@@ -8,6 +8,7 @@
 #pragma once
 
 #include <vector>
+#include <string>
 #include "KNDemoKernel.hh"
 #include "base/UniformGrid.hh"
 #include "base/Types.hh"
@@ -42,6 +43,14 @@ struct KNDemoResult
     double                 total_time = 0; //!< All time
 };
 
+//! Kernel diagnostics
+struct KNDemoKernelDiag
+{
+    std::vector<std::string>  kernel;    //!< Kernel name
+    std::vector<unsigned int> registers; //!< Kernel register use
+    std::vector<double>       occupancy; //!< Kernel occupancy
+};
+
 //---------------------------------------------------------------------------//
 // JSON I/O functions
 //---------------------------------------------------------------------------//
@@ -54,6 +63,9 @@ void from_json(const nlohmann::json& j, KNDemoRunArgs& value);
 
 void to_json(nlohmann::json& j, const KNDemoResult& value);
 void from_json(const nlohmann::json& j, KNDemoResult& value);
+
+void to_json(nlohmann::json& j, const KNDemoKernelDiag& value);
+void from_json(const nlohmann::json& j, KNDemoKernelDiag& value);
 
 //---------------------------------------------------------------------------//
 } // namespace demo_interactor

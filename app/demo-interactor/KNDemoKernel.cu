@@ -11,6 +11,7 @@
 #include <thrust/reduce.h>
 #include "base/ArrayUtils.hh"
 #include "base/Assert.hh"
+#include "base/KernelDiagnostics.hh"
 #include "physics/base/ParticleTrackView.hh"
 #include "physics/base/SecondaryAllocatorView.hh"
 #include "physics/em/KleinNishinaInteractor.hh"
@@ -158,6 +159,14 @@ void initialize(const CudaGridParams&  grid,
 {
     REQUIRE(states.alive.size() == states.size());
     REQUIRE(states.rng.size() == states.size());
+
+    // Get kernel occupancies
+    KernelDiagnostics::store_occupancy(
+        initialize_kn, "demo_interactor::initialize_kn", grid.block_size);
+    KernelDiagnostics::store_occupancy(
+        iterate_kn, "demo_interactor::iterate_kn", grid.block_size);
+
+    // Initialize state kernel invocation
     initialize_kn<<<grid.grid_size, grid.block_size>>>(params, states, initial);
 }
 

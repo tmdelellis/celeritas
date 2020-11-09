@@ -19,7 +19,27 @@ namespace celeritas
  * Accumulate diagnostics about kernels.
  *
  * This class allows storage of Occupancy, Register and other diagnostics for
- * Cuda kernels.
+ * Cuda kernels, e.g.:
+ *
+ * \code
+
+    __global__ void some_kernel();
+
+    void setup()
+    {
+        KernelDiagnostics::store_occupancy(some_kernel, "some_kernel", 256);
+        // ...
+    }
+   \endcode
+ *
+ * Note that store_occupancy() must be called in the same translation
+ * unit ( \c .cu file ) as the kernel itself.
+ *
+ * Then, in output code, the client can output register usage and occupancy
+ * throught the occupancy_map() accessor.
+ *
+ * \note store_occupancy() will result in a compile-time failure if called from
+ * non-CUDA source ( \c .cu ) files
  */
 class KernelDiagnostics
 {
@@ -40,6 +60,9 @@ class KernelDiagnostics
     //! Get kernel data.
     static const KernelOccupancyMap& occupancy_map() { return occupancy_; }
 
+    //! Clear all diagnostic data.
+    static void clear() { occupancy_.clear(); }
+
   private:
     // >>> STATIC DIAGNOSTIC STORAGE
 
@@ -50,6 +73,8 @@ class KernelDiagnostics
 //---------------------------------------------------------------------------//
 } // namespace celeritas
 
+// clang-format off
 #ifdef CELERITAS_USE_CUDA
-#    include "KernelDiagnostics.i.hh"
+#include "KernelDiagnostics.i.hh"
 #endif
+// clang-format on

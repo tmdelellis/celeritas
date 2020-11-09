@@ -13,6 +13,7 @@
 #include <string>
 #include <vector>
 #include <nlohmann/json.hpp>
+#include "base/KernelDiagnostics.hh"
 #include "comm/Communicator.hh"
 #include "comm/ScopedMpiInit.hh"
 #include "comm/Utils.hh"
@@ -69,9 +70,24 @@ void run(std::istream& is)
     REQUIRE(run_args.max_steps > 0);
     auto result = run(run_args);
 
+    // Get kernel diagnostics
+    KNDemoKernelDiag diag;
+    for (auto kd : KernelDiagnostics::occupancy_map())
+    {
+        const auto&  name              = kd.first;
+        unsigned int registers         = 0;
+        double       occupancy         = 0;
+        std::tie(registers, occupancy) = kd.second;
+
+        diag.kernel.push_back(name);
+        diag.registers.push_back(registers);
+        diag.occupancy.push_back(occupancy);
+    }
+
     nlohmann::json outp = {
         {"grid_params", grid_params},
         {"run", run_args},
+        {"diagnostics", diag},
         {"result", result},
     };
     cout << outp.dump() << endl;
