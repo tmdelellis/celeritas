@@ -28,6 +28,7 @@ set(PUBLIC_DEPS)
 list(APPEND SOURCES
   base/Assert.cc
   base/ColorUtils.cc
+  base/KernelDiagnostics.cc
   comm/Utils.cc
   physics/base/ParticleParams.cc
   physics/base/ParticleStateStore.cc

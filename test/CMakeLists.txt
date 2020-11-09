@@ -91,6 +91,7 @@ celeritas_add_test(base/UniformGrid.test.cc)
 if(CELERITAS_USE_CUDA)
   celeritas_add_test(base/NumericLimits.test.cc
     SOURCES base/NumericLimits.test.cu)
+  celeritas_add_test(base/KernelDiagnostics.test.cu)
 endif()
 
 add_cudaoptional_test(base/Range)
