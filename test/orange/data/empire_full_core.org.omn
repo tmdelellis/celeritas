@@ -1,0 +1,775 @@
+!##############################################################################
+[GEOMETRY]
+global "global"
+
+!##############################################################################
+! PINS
+!##############################################################################
+
+!------------------------------------------------------------------------------
+[UNIVERSE=general f]
+interior fhex
+[UNIVERSE][SHAPE=prism fhex]
+num_sides 6
+apothem 1.075
+extents 0 60
+
+[UNIVERSE][SHAPE=cyl inner_cyl]
+axis z
+radius 0.925
+extents 0 60
+
+[UNIVERSE][SHAPE=cyl outer_cyl]
+axis z
+radius 0.975
+extents 0 60
+
+[UNIVERSE][CELL ffill1]
+comp 3
+shapes -fhex +outer_cyl
+
+[UNIVERSE][CELL ffill2]
+comp 0
+shapes -outer_cyl +inner_cyl
+
+[UNIVERSE][CELL ffill3]
+comp 6
+shapes -inner_cyl
+
+!------------------------------------------------------------------------------
+[UNIVERSE=general m]
+interior mhex
+[UNIVERSE][SHAPE=prism mhex]
+num_sides 6
+apothem 1.075
+extents 0 60
+[UNIVERSE][CELL mfill]
+comp 3
+shapes -mhex
+
+!------------------------------------------------------------------------------
+[UNIVERSE=general be_b]
+interior mhex
+[UNIVERSE][SHAPE=prism mhex]
+num_sides 6
+apothem 1.075
+extents 0 20
+[UNIVERSE][CELL mfill]
+comp 2
+shapes -mhex
+
+!------------------------------------------------------------------------------
+[UNIVERSE=general be_t]
+interior mhex
+[UNIVERSE][SHAPE=prism mhex]
+num_sides 6
+apothem 1.075
+extents 0 10
+[UNIVERSE][CELL mfill]
+comp 2
+shapes -mhex
+
+!------------------------------------------------------------------------------
+[UNIVERSE=general y]
+interior yhex
+
+[UNIVERSE][SHAPE=prism yhex]
+num_sides 6
+apothem 1.075
+extents 0 60
+
+[UNIVERSE][SHAPE=cyl inner_cyl]
+axis z
+radius 0.95
+extents 0 60
+
+[UNIVERSE][SHAPE=cyl outer_cyl]
+axis z
+radius 1
+extents 0 60
+
+[UNIVERSE][CELL yfill1]
+comp 3
+shapes -yhex +outer_cyl
+
+[UNIVERSE][CELL yfill2]
+comp 0
+shapes -outer_cyl +inner_cyl
+
+[UNIVERSE][CELL yfill3]
+comp 4
+shapes  -inner_cyl
+
+!------------------------------------------------------------------------------
+[UNIVERSE=general h]
+interior hhex
+
+[UNIVERSE][SHAPE=prism hhex]
+num_sides 6
+apothem 1.075
+extents 0 60
+
+[UNIVERSE][SHAPE=cyl cyl]
+axis z
+radius 1
+extents 0 60
+
+[UNIVERSE][CELL hfill1]
+comp 3
+shapes -hhex +cyl
+
+[UNIVERSE][CELL yfill2]
+comp 5
+shapes -cyl 
+
+!------------------------------------------------------------------------------
+[UNIVERSE=general h_b]
+interior hhex
+
+[UNIVERSE][SHAPE=prism hhex]
+num_sides 6
+apothem 1.075
+extents 0 20
+
+[UNIVERSE][SHAPE=cyl cyl]
+axis z
+radius 1
+extents 0 20
+
+[UNIVERSE][CELL hfill1]
+comp 2
+shapes -hhex +cyl
+
+[UNIVERSE][CELL yfill2]
+comp 5
+shapes -cyl 
+
+!------------------------------------------------------------------------------
+[UNIVERSE=general h_t]
+interior hhex
+
+[UNIVERSE][SHAPE=prism hhex]
+num_sides 6
+apothem 1.075
+extents 0 10
+
+[UNIVERSE][SHAPE=cyl cyl]
+axis z
+radius 1
+extents 0 10
+
+[UNIVERSE][CELL hfill1]
+comp 2
+shapes -hhex +cyl
+
+[UNIVERSE][CELL yfill2]
+comp 5
+shapes -cyl 
+
+
+
+!##############################################################################
+! Assemblies
+!##############################################################################
+
+!------------------------------------------------------------------------------
+[UNIVERSE=hex loading]
+pseudo true
+layout rect
+nu 19
+nv 19
+nz 1
+fill       m m m m m m m m m m m m m m m m m m m
+           m m m m m m m m f h f m m m m m m m m
+           m m m m m m f h y y y h f m m m m m m
+           m m m m f h y y f h f y y h f m m m m
+           m m f h y y f h y y y h f y y h f m m
+           m h y y f h y y f h f y y h f y y h m
+           m f y h y y f h y y y h f y y h y f m
+           m h y f y h y y f h f y y h y f y h m
+           m f y h y f y h y y y h y f y h y f m
+           m h y f y h y f y h y f y h y f y h m
+           m f y h y f y h f y f h y f y h y f m
+           m h y f y h f y y h y y f h y f y h m
+           m f y h f y y h f y f h y y f h y f m
+           m h f y y h f y y h y y f h y y f h m
+           m m m h f y y h f y f h y y f h m m m
+           m m m m m h f y y h y y f h m m m m m
+           m m m m m m m h f y f h m m m m m m m
+           m m m m m m m m m h m m m m m m m m m
+           m m m m m m m m m m m m m m m m m m m
+
+!------------------------------------------------------------------------------
+[UNIVERSE=hex loading_bottom]
+pseudo true
+layout rect
+nu 19
+nv 19
+nz 1
+fill       be_b be_b be_b be_b be_b be_b be_b be_b be_b be_b be_b be_b be_b be_b be_b be_b be_b be_b be_b
+           be_b be_b be_b be_b be_b be_b be_b be_b be_b h_b be_b be_b be_b be_b be_b be_b be_b be_b be_b
+           be_b be_b be_b be_b be_b be_b be_b h_b be_b be_b be_b h_b be_b be_b be_b be_b be_b be_b be_b
+           be_b be_b be_b be_b be_b h_b be_b be_b be_b h_b be_b be_b be_b h_b be_b be_b be_b be_b be_b
+           be_b be_b be_b h_b be_b be_b be_b h_b be_b be_b be_b h_b be_b be_b be_b h_b be_b be_b be_b
+           be_b h_b be_b be_b be_b h_b be_b be_b be_b h_b be_b be_b be_b h_b be_b be_b be_b h_b be_b
+           be_b be_b be_b h_b be_b be_b be_b h_b be_b be_b be_b h_b be_b be_b be_b h_b be_b be_b be_b
+           be_b h_b be_b be_b be_b h_b be_b be_b be_b h_b be_b be_b be_b h_b be_b be_b be_b h_b be_b
+           be_b be_b be_b h_b be_b be_b be_b h_b be_b be_b be_b h_b be_b be_b be_b h_b be_b be_b be_b
+           be_b h_b be_b be_b be_b h_b be_b be_b be_b h_b be_b be_b be_b h_b be_b be_b be_b h_b be_b
+           be_b be_b be_b h_b be_b be_b be_b h_b be_b be_b be_b h_b be_b be_b be_b h_b be_b be_b be_b
+           be_b h_b be_b be_b be_b h_b be_b be_b be_b h_b be_b be_b be_b h_b be_b be_b be_b h_b be_b
+           be_b be_b be_b h_b be_b be_b be_b h_b be_b be_b be_b h_b be_b be_b be_b h_b be_b be_b be_b
+           be_b h_b be_b be_b be_b h_b be_b be_b be_b h_b be_b be_b be_b h_b be_b be_b be_b h_b be_b
+           be_b be_b be_b h_b be_b be_b be_b h_b be_b be_b be_b h_b be_b be_b be_b h_b be_b be_b be_b
+           be_b be_b be_b be_b be_b h_b be_b be_b be_b h_b be_b be_b be_b h_b be_b be_b be_b be_b be_b
+           be_b be_b be_b be_b be_b be_b be_b h_b be_b be_b be_b h_b be_b be_b be_b be_b be_b be_b be_b
+           be_b be_b be_b be_b be_b be_b be_b be_b be_b h_b be_b be_b be_b be_b be_b be_b be_b be_b be_b
+           be_b be_b be_b be_b be_b be_b be_b be_b be_b be_b be_b be_b be_b be_b be_b be_b be_b be_b be_b
+
+!------------------------------------------------------------------------------
+[UNIVERSE=hex loading_top]
+pseudo true
+layout rect
+nu 19
+nv 19
+nz 1
+fill       be_t be_t be_t be_t be_t be_t be_t be_t be_t be_t be_t be_t be_t be_t be_t be_t be_t be_t be_t
+           be_t be_t be_t be_t be_t be_t be_t be_t be_t h_t be_t be_t be_t be_t be_t be_t be_t be_t be_t
+           be_t be_t be_t be_t be_t be_t be_t h_t be_t be_t be_t h_t be_t be_t be_t be_t be_t be_t be_t
+           be_t be_t be_t be_t be_t h_t be_t be_t be_t h_t be_t be_t be_t h_t be_t be_t be_t be_t be_t
+           be_t be_t be_t h_t be_t be_t be_t h_t be_t be_t be_t h_t be_t be_t be_t h_t be_t be_t be_t
+           be_t h_t be_t be_t be_t h_t be_t be_t be_t h_t be_t be_t be_t h_t be_t be_t be_t h_t be_t
+           be_t be_t be_t h_t be_t be_t be_t h_t be_t be_t be_t h_t be_t be_t be_t h_t be_t be_t be_t
+           be_t h_t be_t be_t be_t h_t be_t be_t be_t h_t be_t be_t be_t h_t be_t be_t be_t h_t be_t
+           be_t be_t be_t h_t be_t be_t be_t h_t be_t be_t be_t h_t be_t be_t be_t h_t be_t be_t be_t
+           be_t h_t be_t be_t be_t h_t be_t be_t be_t h_t be_t be_t be_t h_t be_t be_t be_t h_t be_t
+           be_t be_t be_t h_t be_t be_t be_t h_t be_t be_t be_t h_t be_t be_t be_t h_t be_t be_t be_t
+           be_t h_t be_t be_t be_t h_t be_t be_t be_t h_t be_t be_t be_t h_t be_t be_t be_t h_t be_t
+           be_t be_t be_t h_t be_t be_t be_t h_t be_t be_t be_t h_t be_t be_t be_t h_t be_t be_t be_t
+           be_t h_t be_t be_t be_t h_t be_t be_t be_t h_t be_t be_t be_t h_t be_t be_t be_t h_t be_t
+           be_t be_t be_t h_t be_t be_t be_t h_t be_t be_t be_t h_t be_t be_t be_t h_t be_t be_t be_t
+           be_t be_t be_t be_t be_t h_t be_t be_t be_t h_t be_t be_t be_t h_t be_t be_t be_t be_t be_t
+           be_t be_t be_t be_t be_t be_t be_t h_t be_t be_t be_t h_t be_t be_t be_t be_t be_t be_t be_t
+           be_t be_t be_t be_t be_t be_t be_t be_t be_t h_t be_t be_t be_t be_t be_t be_t be_t be_t be_t
+           be_t be_t be_t be_t be_t be_t be_t be_t be_t be_t be_t be_t be_t be_t be_t be_t be_t be_t be_t
+
+
+!------------------------------------------------------------------------------
+[UNIVERSE=general fuel_assembly]
+interior fuel_assembly_outer
+
+[UNIVERSE][SHAPE=prism fuel_assembly_outer]
+num_sides 6
+apothem 16.75
+rotfrac 0.5
+extents 0 60
+
+[UNIVERSE][SHAPE=prism fuel_assembly_fill]
+num_sides 6
+apothem 16.13694002385004
+rotfrac 0.5 
+extents 0 60
+
+[UNIVERSE][ARRAY fuel_assembly]
+fill      loading
+interior  fuel_assembly_fill
+place     9 9 0
+origin    0 0 0
+
+[UNIVERSE][CELL fuel_assembly_gap]
+comp 3
+shapes -fuel_assembly_outer +fuel_assembly_fill
+
+!------------------------------------------------------------------------------
+[UNIVERSE=general heat_pipe_bottom_assembly]
+interior heat_pipe_bottom_outer
+
+[UNIVERSE][SHAPE=prism heat_pipe_bottom_outer]
+num_sides 6
+apothem 16.75
+rotfrac 0.5
+extents 0 20
+
+[UNIVERSE][SHAPE=prism heat_pipe_bottom_fill]
+num_sides 6
+apothem 16.13694002385004
+rotfrac 0.5 
+extents 0 20
+
+[UNIVERSE][ARRAY heat_pipe_bottom_assembly]
+fill      loading_bottom
+interior  heat_pipe_bottom_fill
+place     9 9 0
+origin    0 0 0
+
+[UNIVERSE][CELL heat_pipe_bottom_gap]
+comp 2
+shapes -heat_pipe_bottom_outer +heat_pipe_bottom_fill
+
+!------------------------------------------------------------------------------
+[UNIVERSE=general heat_pipe_top_assembly]
+interior heat_pipe_top_outer
+
+[UNIVERSE][SHAPE=prism heat_pipe_top_outer]
+num_sides 6
+apothem 16.75
+rotfrac 0.5
+extents 0 10
+
+[UNIVERSE][SHAPE=prism heat_pipe_top_fill]
+num_sides 6
+apothem 16.13694002385004
+rotfrac 0.5 
+extents 0 10
+
+[UNIVERSE][ARRAY heat_pipe_top_assembly]
+fill      loading_top
+interior  heat_pipe_top_fill
+place     9 9 0
+origin    0 0 0
+
+[UNIVERSE][CELL heat_pipe_top_gap]
+comp 2
+shapes -heat_pipe_top_outer +heat_pipe_top_fill
+
+!------------------------------------------------------------------------------
+[UNIVERSE=general air_assembly]
+interior air_assembly_outer
+
+[UNIVERSE][SHAPE=prism air_assembly_outer]
+num_sides 6
+apothem 16.75
+rotfrac 0.5
+extents 0 60
+
+[UNIVERSE][CELL air_assembly_fill]
+comp 0
+shapes -air_assembly_outer 
+
+!------------------------------------------------------------------------------
+[UNIVERSE=general air_bottom_assembly]
+interior air_assembly_outer
+
+[UNIVERSE][SHAPE=prism air_assembly_outer]
+num_sides 6
+apothem 16.75
+rotfrac 0.5
+extents 0 20
+
+[UNIVERSE][CELL air_assembly_fill]
+comp 0
+shapes -air_assembly_outer 
+
+!------------------------------------------------------------------------------
+[UNIVERSE=general air_top_assembly]
+interior air_assembly_outer
+
+[UNIVERSE][SHAPE=prism air_assembly_outer]
+num_sides 6
+apothem 16.75
+rotfrac 0.5
+extents 0 10
+
+[UNIVERSE][CELL air_assembly_fill]
+comp 0
+shapes -air_assembly_outer 
+
+
+!------------------------------------------------------------------------------
+[UNIVERSE=general drum_in_north_assembly]
+interior hex
+
+[UNIVERSE][SHAPE=prism hex]
+num_sides 6
+apothem 16.75
+rotfrac 0.5
+extents 0 60
+
+[UNIVERSE][SHAPE=cyl inner_cyl]
+axis z
+radius 13.8
+extents 0 60
+
+[UNIVERSE][SHAPE=cyl outer_cyl]
+axis z
+radius 14.8
+extents 0 60
+
+[UNIVERSE][SHAPE=cuboid clip]
+faces -7.5 7.5 -7.5 7.5 0 60
+origin 0.0 -10.6066 0
+rotate 0.7071067811865475 0.7071067811865475 0 -0.7071067811865475 0.7071067811865475 0 0 0 1
+
+[UNIVERSE][CELL fill1]
+comp 2
+shapes -hex +outer_cyl
+
+[UNIVERSE][CELL fill2]
+comp 1
+shapes -outer_cyl +inner_cyl -clip
+
+[UNIVERSE][CELL fill3]
+comp 2
+shapes -outer_cyl +inner_cyl +clip
+
+[UNIVERSE][CELL fill4]
+comp 2
+shapes -inner_cyl
+
+!------------------------------------------------------------------------------
+[UNIVERSE=general drum_in_northwest_assembly]
+interior hex
+
+[UNIVERSE][SHAPE=prism hex]
+num_sides 6
+apothem 16.75
+rotfrac 0.5
+extents 0 60
+
+[UNIVERSE][SHAPE=cyl inner_cyl]
+axis z
+radius 13.8
+extents 0 60
+
+[UNIVERSE][SHAPE=cyl outer_cyl]
+axis z
+radius 14.8
+extents 0 60
+
+[UNIVERSE][SHAPE=cuboid clip]
+faces -7.5 7.5 -7.5 7.5 0 60
+origin 9.185587 -5.303301 0
+rotate -0.2588190451025208 0.9659258262890683 0 -0.9659258262890683 -0.2588190451025208 0 0 0 1
+
+[UNIVERSE][CELL fill1]
+comp 2
+shapes -hex +outer_cyl
+
+[UNIVERSE][CELL fill2]
+comp 1
+shapes -outer_cyl +inner_cyl -clip
+
+[UNIVERSE][CELL fill3]
+comp 2
+shapes -outer_cyl +inner_cyl +clip
+
+[UNIVERSE][CELL fill4]
+comp 2
+shapes -inner_cyl
+
+!------------------------------------------------------------------------------
+[UNIVERSE=general drum_in_southwest_assembly]
+interior hex
+
+[UNIVERSE][SHAPE=prism hex]
+num_sides 6
+apothem 16.75
+rotfrac 0.5
+extents 0 60
+
+[UNIVERSE][SHAPE=cyl inner_cyl]
+axis z
+radius 13.8
+extents 0 60
+
+[UNIVERSE][SHAPE=cyl outer_cyl]
+axis z
+radius 14.8
+extents 0 60
+
+[UNIVERSE][SHAPE=cuboid clip]
+faces -7.5 7.5 -7.5 7.5 0 60
+origin 9.185587 5.303301 0
+rotate  0.2588190451025208 0.2588190451025208 0 -0.2588190451025208 0.2588190451025208 0 0 0 1
+
+[UNIVERSE][CELL fill1]
+comp 2
+shapes -hex +outer_cyl
+
+[UNIVERSE][CELL fill2]
+comp 1
+shapes -outer_cyl +inner_cyl -clip
+
+[UNIVERSE][CELL fill3]
+comp 2
+shapes -outer_cyl +inner_cyl +clip
+
+[UNIVERSE][CELL fill4]
+comp 2
+shapes -inner_cyl
+
+!------------------------------------------------------------------------------
+[UNIVERSE=general drum_in_south_assembly]
+interior hex
+
+[UNIVERSE][SHAPE=prism hex]
+num_sides 6
+apothem 16.75
+rotfrac 0.5
+extents 0 60
+
+[UNIVERSE][SHAPE=cyl inner_cyl]
+axis z
+radius 13.8
+extents 0 60
+
+[UNIVERSE][SHAPE=cyl outer_cyl]
+axis z
+radius 14.8
+extents 0 60
+
+[UNIVERSE][SHAPE=cuboid clip]
+faces -7.5 7.5 -7.5 7.5 0 60
+origin 0 10.6066 0
+rotate 0.7071067811865475 0.7071067811865475 0 -0.7071067811865475 0.7071067811865475 0 0 0 1
+
+[UNIVERSE][CELL fill1]
+comp 2
+shapes -hex +outer_cyl
+
+[UNIVERSE][CELL fill2]
+comp 1
+shapes -outer_cyl +inner_cyl -clip
+
+[UNIVERSE][CELL fill3]
+comp 2
+shapes -outer_cyl +inner_cyl +clip
+
+[UNIVERSE][CELL fill4]
+comp 2
+shapes -inner_cyl
+
+!------------------------------------------------------------------------------
+[UNIVERSE=general drum_in_southeast_assembly]
+interior hex
+
+[UNIVERSE][SHAPE=prism hex]
+num_sides 6
+apothem 16.75
+rotfrac 0.5
+extents 0 60
+
+[UNIVERSE][SHAPE=cyl inner_cyl]
+axis z
+radius 13.8
+extents 0 60
+
+[UNIVERSE][SHAPE=cyl outer_cyl]
+axis z
+radius 14.8
+extents 0 60
+
+[UNIVERSE][SHAPE=cuboid clip]
+faces -7.5 7.5 -7.5 7.5 0 60
+origin -9.185587 5.303301 0
+rotate  0.2588190451025208 0.2588190451025208 0 -0.2588190451025208 0.2588190451025208 0 0 0 1
+
+[UNIVERSE][CELL fill1]
+comp 2
+shapes -hex +outer_cyl
+
+[UNIVERSE][CELL fill2]
+comp 1
+shapes -outer_cyl +inner_cyl -clip
+
+[UNIVERSE][CELL fill3]
+comp 2
+shapes -outer_cyl +inner_cyl +clip
+
+[UNIVERSE][CELL fill4]
+comp 2
+shapes -inner_cyl
+
+!------------------------------------------------------------------------------
+[UNIVERSE=general drum_in_northeast_assembly]
+interior hex
+
+[UNIVERSE][SHAPE=prism hex]
+num_sides 6
+apothem 16.75
+rotfrac 0.5
+extents 0 60
+
+[UNIVERSE][SHAPE=cyl inner_cyl]
+axis z
+radius 13.8
+extents 0 60
+
+[UNIVERSE][SHAPE=cyl outer_cyl]
+axis z
+radius 14.8
+extents 0 60
+
+[UNIVERSE][SHAPE=cuboid clip]
+faces -7.5 7.5 -7.5 7.5 0 60
+origin -9.185587 -5.303301 0
+rotate  0.2588190451025208 0.2588190451025208 0 -0.2588190451025208 0.2588190451025208 0 0 0 1
+
+[UNIVERSE][CELL fill1]
+comp 2
+shapes -hex +outer_cyl
+
+[UNIVERSE][CELL fill2]
+comp 1
+shapes -outer_cyl +inner_cyl -clip
+
+[UNIVERSE][CELL fill3]
+comp 2
+shapes -outer_cyl +inner_cyl +clip
+
+[UNIVERSE][CELL fill4]
+comp 2
+shapes -inner_cyl
+
+
+!------------------------------------------------------------------------------
+[UNIVERSE=general be_assembly]
+interior be_assembly_outer
+
+[UNIVERSE][SHAPE=prism be_assembly_outer]
+num_sides 6
+apothem 16.75
+rotfrac 0.5
+extents 0 60
+
+[UNIVERSE][CELL be_assembly]
+comp 2
+shapes -be_assembly_outer 
+
+!------------------------------------------------------------------------------
+[UNIVERSE=general be_bottom_assembly]
+interior be_assembly_outer
+
+[UNIVERSE][SHAPE=prism be_assembly_outer]
+num_sides 6
+apothem 16.75
+rotfrac 0.5
+extents 0 20
+
+[UNIVERSE][CELL be_assembly]
+comp 2
+shapes -be_assembly_outer 
+
+!------------------------------------------------------------------------------
+[UNIVERSE=general be_top_assembly]
+interior be_assembly_outer
+
+[UNIVERSE][SHAPE=prism be_assembly_outer]
+num_sides 6
+apothem 16.75
+rotfrac 0.5
+extents 0 10
+
+[UNIVERSE][CELL be_assembly]
+comp 2
+shapes -be_assembly_outer 
+
+!------------------------------------------------------------------------------
+[UNIVERSE=hex core]
+pseudo true
+layout rhomb
+nu 9
+nv 12
+nz 1
+fill       be_assembly be_assembly be_assembly be_assembly be_assembly be_assembly be_assembly be_assembly be_assembly
+           be_assembly be_assembly be_assembly be_assembly be_assembly be_assembly be_assembly be_assembly be_assembly
+           be_assembly be_assembly be_assembly be_assembly be_assembly be_assembly be_assembly be_assembly be_assembly
+           be_assembly be_assembly drum_in_north_assembly drum_in_north_assembly be_assembly be_assembly be_assembly be_assembly be_assembly
+           be_assembly drum_in_northwest_assembly fuel_assembly fuel_assembly fuel_assembly drum_in_northeast_assembly be_assembly be_assembly be_assembly
+           be_assembly drum_in_northwest_assembly fuel_assembly fuel_assembly fuel_assembly fuel_assembly drum_in_northeast_assembly be_assembly be_assembly
+           be_assembly be_assembly fuel_assembly fuel_assembly air_assembly fuel_assembly fuel_assembly be_assembly be_assembly
+           be_assembly be_assembly drum_in_southwest_assembly fuel_assembly fuel_assembly fuel_assembly fuel_assembly drum_in_southeast_assembly be_assembly
+           be_assembly be_assembly be_assembly drum_in_southwest_assembly fuel_assembly fuel_assembly fuel_assembly drum_in_southeast_assembly be_assembly
+           be_assembly be_assembly be_assembly be_assembly be_assembly drum_in_south_assembly drum_in_south_assembly be_assembly be_assembly
+           be_assembly be_assembly be_assembly be_assembly be_assembly be_assembly be_assembly be_assembly be_assembly
+           be_assembly be_assembly be_assembly be_assembly be_assembly be_assembly be_assembly be_assembly be_assembly
+
+!------------------------------------------------------------------------------
+[UNIVERSE=hex bottom_refl]
+pseudo true
+layout rhomb
+nu 9
+nv 12
+nz 1
+fill       be_bottom_assembly be_bottom_assembly be_bottom_assembly be_bottom_assembly be_bottom_assembly be_bottom_assembly be_bottom_assembly be_bottom_assembly be_bottom_assembly
+           be_bottom_assembly be_bottom_assembly be_bottom_assembly be_bottom_assembly be_bottom_assembly be_bottom_assembly be_bottom_assembly be_bottom_assembly be_bottom_assembly
+           be_bottom_assembly be_bottom_assembly be_bottom_assembly be_bottom_assembly be_bottom_assembly be_bottom_assembly be_bottom_assembly be_bottom_assembly be_bottom_assembly
+           be_bottom_assembly be_bottom_assembly be_bottom_assembly be_bottom_assembly be_bottom_assembly be_bottom_assembly be_bottom_assembly be_bottom_assembly be_bottom_assembly
+           be_bottom_assembly be_bottom_assembly heat_pipe_bottom_assembly heat_pipe_bottom_assembly heat_pipe_bottom_assembly be_bottom_assembly be_bottom_assembly be_bottom_assembly be_bottom_assembly
+           be_bottom_assembly be_bottom_assembly heat_pipe_bottom_assembly heat_pipe_bottom_assembly heat_pipe_bottom_assembly heat_pipe_bottom_assembly be_bottom_assembly be_bottom_assembly be_bottom_assembly
+           be_bottom_assembly be_bottom_assembly heat_pipe_bottom_assembly heat_pipe_bottom_assembly air_bottom_assembly heat_pipe_bottom_assembly heat_pipe_bottom_assembly be_bottom_assembly be_bottom_assembly
+           be_bottom_assembly be_bottom_assembly be_bottom_assembly heat_pipe_bottom_assembly heat_pipe_bottom_assembly heat_pipe_bottom_assembly heat_pipe_bottom_assembly be_bottom_assembly be_bottom_assembly
+           be_bottom_assembly be_bottom_assembly be_bottom_assembly be_bottom_assembly heat_pipe_bottom_assembly heat_pipe_bottom_assembly heat_pipe_bottom_assembly be_bottom_assembly be_bottom_assembly
+           be_bottom_assembly be_bottom_assembly be_bottom_assembly be_bottom_assembly be_bottom_assembly be_bottom_assembly be_bottom_assembly be_bottom_assembly be_bottom_assembly
+           be_bottom_assembly be_bottom_assembly be_bottom_assembly be_bottom_assembly be_bottom_assembly be_bottom_assembly be_bottom_assembly be_bottom_assembly be_bottom_assembly
+           be_bottom_assembly be_bottom_assembly be_bottom_assembly be_bottom_assembly be_bottom_assembly be_bottom_assembly be_bottom_assembly be_bottom_assembly be_bottom_assembly
+
+!------------------------------------------------------------------------------
+[UNIVERSE=hex top_refl]
+pseudo true
+layout rhomb
+nu 9
+nv 12
+nz 1
+fill       be_top_assembly be_top_assembly be_top_assembly be_top_assembly be_top_assembly be_top_assembly be_top_assembly be_top_assembly be_top_assembly
+           be_top_assembly be_top_assembly be_top_assembly be_top_assembly be_top_assembly be_top_assembly be_top_assembly be_top_assembly be_top_assembly
+           be_top_assembly be_top_assembly be_top_assembly be_top_assembly be_top_assembly be_top_assembly be_top_assembly be_top_assembly be_top_assembly
+           be_top_assembly be_top_assembly be_top_assembly be_top_assembly be_top_assembly be_top_assembly be_top_assembly be_top_assembly be_top_assembly
+           be_top_assembly be_top_assembly heat_pipe_top_assembly heat_pipe_top_assembly heat_pipe_top_assembly be_top_assembly be_top_assembly be_top_assembly be_top_assembly
+           be_top_assembly be_top_assembly heat_pipe_top_assembly heat_pipe_top_assembly heat_pipe_top_assembly heat_pipe_top_assembly be_top_assembly be_top_assembly be_top_assembly
+           be_top_assembly be_top_assembly heat_pipe_top_assembly heat_pipe_top_assembly air_top_assembly heat_pipe_top_assembly heat_pipe_top_assembly be_top_assembly be_top_assembly
+           be_top_assembly be_top_assembly be_top_assembly heat_pipe_top_assembly heat_pipe_top_assembly heat_pipe_top_assembly heat_pipe_top_assembly be_top_assembly be_top_assembly
+           be_top_assembly be_top_assembly be_top_assembly be_top_assembly heat_pipe_top_assembly heat_pipe_top_assembly heat_pipe_top_assembly be_top_assembly be_top_assembly
+           be_top_assembly be_top_assembly be_top_assembly be_top_assembly be_top_assembly be_top_assembly be_top_assembly be_top_assembly be_top_assembly
+           be_top_assembly be_top_assembly be_top_assembly be_top_assembly be_top_assembly be_top_assembly be_top_assembly be_top_assembly be_top_assembly
+           be_top_assembly be_top_assembly be_top_assembly be_top_assembly be_top_assembly be_top_assembly be_top_assembly be_top_assembly be_top_assembly
+
+!##############################################################################
+! Global universe
+!##############################################################################
+
+[UNIVERSE=general global]
+interior "outer"
+
+[UNIVERSE][SHAPE=cuboid outer]
+faces -117 117 -117 117 -20 70
+
+[UNIVERSE][SHAPE=cyl core_bound]
+axis z
+radius 117
+extents 0 60
+origin 0 0 0
+
+[UNIVERSE][ARRAY core_fill]
+fill      core
+place     4 5 0
+origin    0 0 0
+interior core_bound
+
+[UNIVERSE][SHAPE=cyl bottom_refl_bound]
+axis z
+radius 117
+extents -20 0
+origin 0 0 0
+
+[UNIVERSE][ARRAY bottom_refl_fill]
+fill      bottom_refl
+place     4 5 0
+origin    0 0 -20
+interior  bottom_refl_bound
+
+[UNIVERSE][SHAPE=cyl top_refl_bound]
+axis z
+radius 117
+extents 60 70
+origin 0 0 0
+
+[UNIVERSE][ARRAY top_refl_fill]
+fill      top_refl
+place     4 5 0
+origin    0 0 60
+interior  top_refl_bound
+
+[UNIVERSE][CELL interior]
+comp 0
+shapes -outer +core_bound +bottom_refl_bound +top_refl_bound
