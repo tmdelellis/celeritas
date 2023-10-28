@@ -210,7 +210,15 @@ celeritas_add_test(orange/CsgTree.test.cc
 celeritas_add_test(orange/CsgTreeUtils.test.cc)
 celeritas_add_test(orange/MatrixUtils.test.cc)
 celeritas_add_test(orange/OrangeTypes.test.cc)
-celeritas_add_device_test(orange/Orange)
+
+set(_orange_args)
+if(CELERITAS_USE_CUDA OR CELERITAS_USE_HIP)
+  list(APPEND _orange_args
+    orange/OrangeDeviceTracker.cu
+    orange/OrangeDeviceTracker.cc
+  )
+endif()
+celeritas_add_device_test(orange/Orange ${_orange_args})
 
 # Base detail
 celeritas_add_test(orange/detail/BIHBuilder.test.cc)

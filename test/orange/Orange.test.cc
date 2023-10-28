@@ -17,6 +17,7 @@
 #include "orange/construct/OrangeInput.hh"
 #include "celeritas/Constants.hh"
 
+#include "OrangeDeviceTracker.hh"
 #include "OrangeGeoTestBase.hh"
 #include "TestMacros.hh"
 #include "celeritas_test.hh"
@@ -108,6 +109,12 @@ class NestedRectArraysTest : public OrangeTest
 class Geant4Testem15Test : public OrangeTest
 {
     void SetUp() override { this->build_geometry("geant4-testem15.org.json"); }
+};
+
+#define DeviceHexTest TEST_IF_CELERITAS_JSON(DeviceHexTest)
+class DeviceHexTest : public OrangeTest
+{
+    void SetUp() override {}
 };
 
 //---------------------------------------------------------------------------//
@@ -1026,6 +1033,15 @@ TEST_F(HexArrayTest, track_out)
 
     EXPECT_VEC_EQ(refids, vids);
     EXPECT_VEC_CLOSE(d2b, refd2b, 1e-5, 1e-5);
+}
+
+TEST_F(DeviceHexTest, TEST_IF_CELER_DEVICE(tracking))
+{
+    OrangeDeviceTracker tracker(
+        this->test_data_path("orange", "empire_full_core.org.json"));
+
+    tracker.allocate(10);
+    tracker.track({-83.75, -83.75, 0.0}, {83.75, 83.75, 60.0});
 }
 
 //---------------------------------------------------------------------------//
