@@ -7,9 +7,12 @@
 //---------------------------------------------------------------------------//
 #include "OrangeDeviceTracker.hh"
 
+#include "corecel/Types.hh"
 #include "corecel/device_runtime_api.h"
+#include "corecel/data/ObserverPtr.device.hh"
 #include "corecel/sys/KernelParamCalculator.device.hh"
 #include "corecel/sys/ThreadId.hh"
+#include "orange/OrangeTrackView.hh"
 
 namespace celeritas
 {
@@ -18,14 +21,21 @@ namespace test
 //---------------------------------------------------------------------------//
 // KERNELS
 //---------------------------------------------------------------------------//
-__global__ void
-initialize_kernel(Span<int> indices, Span<Real3> pos, Span<Real3> dir)
+__global__ void initialize_kernel(OrangeParams::DeviceRef* params,
+                                  DeviceRef<OrangeStateData>* states,
+                                  Span<int> indices,
+                                  Span<Real3> pos,
+                                  Span<Real3> dir)
 {
-    auto tid = TrackSlotId{KernelParamCalculator::thread_id().unchecked_get()};
+    auto tid = KernelParamCalculator::thread_id();
     if (tid.get() >= indices.size())
     {
         return;
     }
+
+    auto pid = TrackSlotId{static_cast<size_type>(indices[tid.get()])};
+    OrangeTrackView track(*params, *states, pid);
+    track = {pos[pid.get()], dir[pid.get()]};
 
     printf(
         "Index = %5d; Pos = %12.6f, %12.6f, %12.6f; Dir = %12.6f, %12.6f "
@@ -49,9 +59,13 @@ void OrangeDeviceTracker::initialize(IndexVector& indices,
                                      SpaceVector& pos,
                                      SpaceVector& dir)
 {
+    auto params = make_observer(params_vec_);
+    auto states = make_observer(states_vec_);
     CELER_LAUNCH_KERNEL(initialize,
                         indices.size(),
                         0,
+                        params.get(),
+                        states.get(),
                         indices.device_ref(),
                         pos.device_ref(),
                         dir.device_ref());
