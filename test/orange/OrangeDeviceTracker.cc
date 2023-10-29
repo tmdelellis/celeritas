@@ -62,7 +62,7 @@ void OrangeDeviceTracker::allocate(unsigned int num_particles)
 /*!
  * Track through geometry.
  */
-void OrangeDeviceTracker::track(Real3 low, Real3 high)
+void OrangeDeviceTracker::track(Real3 low, Real3 high) const
 {
     auto N = states_.size();
     std::mt19937 rng(23423121);
@@ -72,7 +72,7 @@ void OrangeDeviceTracker::track(Real3 low, Real3 high)
 
     std::vector<Real3> pos(N);
     std::vector<Real3> dir(N);
-    std::vector<int> indices(N);
+    std::vector<unsigned int> indices(N);
 
     std::iota(indices.begin(), indices.end(), 0);
 
