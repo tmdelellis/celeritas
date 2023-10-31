@@ -1040,8 +1040,10 @@ TEST_F(DeviceHexTest, TEST_IF_CELER_DEVICE(tracking))
     OrangeDeviceTracker tracker(
         this->test_data_path("orange", "empire_full_core.org.json"));
 
-    tracker.allocate(10);
-    tracker.track({-83.75, -83.75, 0.0}, {83.75, 83.75, 60.0});
+    tracker.allocate(256);
+    auto steps
+        = tracker.track({-83.75, -83.75, 0.0}, {83.75, 83.75, 60.0}, false);
+    EXPECT_EQ(308, steps);
 }
 
 //---------------------------------------------------------------------------//

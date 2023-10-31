@@ -43,7 +43,7 @@ class OrangeDeviceTracker
     void allocate(unsigned int num_particles);
 
     // Track through geometry
-    void track(Real3 low, Real3 high) const;
+    unsigned int track(Real3 low, Real3 high, bool output) const;
 
     // Invalid id
     CELER_FUNCTION static constexpr unsigned int invalid_id()
@@ -57,7 +57,7 @@ class OrangeDeviceTracker
     using IndexVector = DeviceVector<unsigned int>;
     using SpaceVector = DeviceVector<Real3>;
     using DoubleVector = DeviceVector<double>;
-    using BoolVector = DeviceVector<bool>;
+    using BoolVector = DeviceVector<unsigned int>;
     using BoundaryVector = DeviceVector<BoundaryState>;
 
     //// IMPLEMENTATION ////
@@ -82,6 +82,21 @@ class OrangeDeviceTracker
                              BoundaryVector& boundary_states,
                              IndexVector& cells,
                              IndexVector& matids) const;
+
+    // Positions and directions
+    void pos_dir(IndexVector const& indices,
+                 SpaceVector& pos,
+                 SpaceVector& dir) const;
+
+    // Get a device vector
+    template<class T>
+    DeviceVector<T> device_vector(std::vector<T>& v, size_type N) const
+    {
+        v.resize(N);
+        DeviceVector<T> dv(N);
+        dv.copy_to_device(make_span(v));
+        return dv;
+    }
 
     //// DATA ////
 

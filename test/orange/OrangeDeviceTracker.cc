@@ -8,6 +8,7 @@
 #include "OrangeDeviceTracker.hh"
 
 #include <fstream>
+#include <iomanip>
 #include <iostream>
 #include <random>
 #include <nlohmann/json.hpp>
@@ -62,8 +63,12 @@ void OrangeDeviceTracker::allocate(unsigned int num_particles)
 /*!
  * Track through geometry.
  */
-void OrangeDeviceTracker::track(Real3 low, Real3 high) const
+unsigned int
+OrangeDeviceTracker::track(Real3 low, Real3 high, bool output) const
 {
+    using std::cout;
+    using std::endl;
+
     auto N = states_.size();
     std::mt19937 rng(23423121);
 
@@ -82,15 +87,102 @@ void OrangeDeviceTracker::track(Real3 low, Real3 high) const
         dir[n] = sample_dir(rng);
     }
 
-    SpaceVector pos_d(N);
-    SpaceVector dir_d(N);
+    // Initialize the geometry
     IndexVector indices_d(N);
-
-    pos_d.copy_to_device(make_span(pos));
-    dir_d.copy_to_device(make_span(dir));
     indices_d.copy_to_device(make_span(indices));
+    {
+        SpaceVector pos_d(N);
+        SpaceVector dir_d(N);
 
-    this->initialize(indices_d, pos_d, dir_d);
+        pos_d.copy_to_device(make_span(pos));
+        dir_d.copy_to_device(make_span(dir));
+
+        this->initialize(indices_d, pos_d, dir_d);
+    }
+
+    // Tracking fields
+    std::vector<double> distances;
+    std::vector<unsigned int> mask;
+    std::vector<BoundaryState> bnd_states;
+    std::vector<unsigned int> cells;
+    std::vector<unsigned int> matids;
+
+    // Track particles
+    unsigned int step = 0;
+    while (!indices_d.empty())
+    {
+        auto size = indices_d.size();
+
+        if (output)
+        {
+            cout << "Iteration = " << step << " ; indices = " << indices.size()
+                 << " ; states = " << states_.size() << endl;
+
+            auto pos_d = this->device_vector(pos, size);
+            auto dir_d = this->device_vector(dir, size);
+
+            this->pos_dir(indices_d, pos_d, dir_d);
+
+            pos_d.copy_to_host(make_span(pos));
+            dir_d.copy_to_host(make_span(dir));
+
+            for (auto n : range(size))
+            {
+                cout << " * " << std::left << std::setw(6) << indices[n]
+                     << std::showpos << std::fixed << std::setprecision(5)
+                     << std::setw(12) << pos[n][0] << std::setw(12)
+                     << pos[n][1] << std::setw(12) << pos[n][2]
+                     << std::setw(12) << dir[n][0] << std::setw(12)
+                     << dir[n][1] << std::setw(12) << dir[n][2] << endl;
+            }
+            cout << endl;
+        }
+
+        // Calculate distance to boundary
+        auto distances_d = this->device_vector(distances, size);
+        this->distance_to_boundary(indices_d, distances_d);
+
+        if (output)
+        {
+            distances_d.copy_to_host(make_span(distances));
+            for (auto n : range(size))
+            {
+                cout << " ^ " << std::left << std::setw(6) << indices[n]
+                     << std::fixed << std::setprecision(5) << std::showpos
+                     << distances[n] << endl;
+            }
+            cout << endl;
+        }
+
+        // Move across surface
+        std::fill(mask.begin(), mask.end(), 1);
+        auto bnd_states_d = this->device_vector(bnd_states, size);
+        auto mask_d = this->device_vector(mask, size);
+        auto cells_d = this->device_vector(cells, size);
+        auto matids_d = this->device_vector(matids, size);
+        this->move_across_surface(
+            indices_d, mask_d, bnd_states_d, cells_d, matids_d);
+
+        // Check for leaving
+        {
+            bnd_states_d.copy_to_host(make_span(bnd_states));
+            std::vector<unsigned int> tmp_indices;
+            for (auto n : range(size))
+            {
+                if (bnd_states[n] == BoundaryState::INSIDE)
+                {
+                    tmp_indices.push_back(indices[n]);
+                }
+            }
+            indices = tmp_indices;
+        }
+
+        ++step;
+
+        indices_d = this->device_vector(indices, indices.size());
+    }
+
+    return step;
 }
 
 //---------------------------------------------------------------------------//

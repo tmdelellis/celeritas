@@ -61,7 +61,7 @@ __global__ void d2b_kernel(OrangeParams::DeviceRef const* params,
 __global__ void move_to_point_kernel(OrangeParams::DeviceRef const* params,
                                      DeviceRef<OrangeStateData> const* states,
                                      Span<unsigned int const> indices,
-                                     Span<bool const> mask,
+                                     Span<unsigned int const> mask,
                                      Span<double const> distances)
 {
     auto tid = KernelParamCalculator::thread_id();
@@ -70,7 +70,6 @@ __global__ void move_to_point_kernel(OrangeParams::DeviceRef const* params,
     {
         auto pid = TrackSlotId{static_cast<size_type>(indices[tid.get()])};
         OrangeTrackView track(*params, *states, pid);
-
         auto next_step = track.find_next_step().distance;
         track.move_internal(distances[tid.get()]);
     }
@@ -82,7 +81,7 @@ __global__ void move_across_surface_kernel(
     DeviceRef<OrangeStateData> const* states,
     Span<unsigned int const> all_matids,
     Span<unsigned int const> indices,
-    Span<bool const> mask,
+    Span<unsigned int const> mask,
     Span<OrangeDeviceTracker::BoundaryState> boundary_states,
     Span<unsigned int> cells,
     Span<unsigned int> matids)
@@ -112,6 +111,25 @@ __global__ void move_across_surface_kernel(
             matids[tid.get()] = OrangeDeviceTracker::invalid_id();
         }
     }
+}
+
+//---------------------------------------------------------------------------//
+__global__ void pos_dir_kernel(OrangeParams::DeviceRef const* params,
+                               DeviceRef<OrangeStateData> const* states,
+                               Span<unsigned int const> indices,
+                               Span<Real3> pos,
+                               Span<Real3> dir)
+{
+    auto tid = KernelParamCalculator::thread_id();
+    if (tid.get() >= indices.size())
+    {
+        return;
+    }
+
+    auto pid = TrackSlotId{static_cast<size_type>(indices[tid.get()])};
+    OrangeTrackView track(*params, *states, pid);
+    pos[tid.get()] = track.pos();
+    dir[tid.get()] = track.dir();
 }
 
 //---------------------------------------------------------------------------//
@@ -212,6 +230,30 @@ void OrangeDeviceTracker::move_across_surface(IndexVector const& indices,
                         boundary_states.device_ref(),
                         cells.device_ref(),
                         matids.device_ref());
+    CELER_DEVICE_CALL_PREFIX(DeviceSynchronize());
+}
+
+//---------------------------------------------------------------------------//
+/*!
+ * Get positions and directions.
+ */
+void OrangeDeviceTracker::pos_dir(IndexVector const& indices,
+                                  SpaceVector& pos,
+                                  SpaceVector& dir) const
+{
+    CELER_EXPECT(indices.size() == pos.size());
+    CELER_EXPECT(indices.size() == dir.size());
+
+    auto params = make_observer(params_vec_);
+    auto states = make_observer(states_vec_);
+    CELER_LAUNCH_KERNEL(pos_dir,
+                        indices.size(),
+                        0,
+                        params.get(),
+                        states.get(),
+                        indices.device_ref(),
+                        pos.device_ref(),
+                        dir.device_ref());
     CELER_DEVICE_CALL_PREFIX(DeviceSynchronize());
 }
 
